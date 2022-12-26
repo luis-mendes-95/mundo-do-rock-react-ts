@@ -64,7 +64,7 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
   }
 
   const set_items_qty = () => {
-    setItemsQty(itemsQty = 0)
+    setItemsQty(itemsQty = 1)
   }
 
   return (

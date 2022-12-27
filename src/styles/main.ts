@@ -156,5 +156,7 @@ export const Div_floating_info = styled.div`
 `;
 
 export const P_aria_label = styled.p`
+  font-size: 12pt;
+  color: red;
 
 `;

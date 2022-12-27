@@ -1,7 +1,6 @@
 import * as main from "../../styles/main"
 import { useContext } from "react"
 import { SalesContext } from "../../contexts/sales"
-import { GeneralContext } from "../../contexts/general";
 import { useForm, Control, useFieldArray, useWatch } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,7 +9,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 
 const FormNewSale = () => {
 
-  const { save_database } = useContext(GeneralContext)
+  const { itemsQty, set_items_qty_sum, set_items_qty_sub, set_modal_sale, addSale, salesDatabase } = useContext(SalesContext)
 
   type FormValues = {
     date: string | unknown,
@@ -18,28 +17,41 @@ const FormNewSale = () => {
     item: {
       cod: number | null,
       description: string,
-      price: number,
+      price: number | null,
       pay_type: string,
       obs: string
-    }[]
+    }[] | object[]
   }
 
-  /*  const saleSchema = yup.object().shape({
-      client: yup
-        .string()
-        .required("Preencha o nome do cliente"),
-      cod: yup
-        .number(),
-      description: yup
-        .string(),
-      price: yup
-        .string(),
-      pay_type: yup
-        .string()
-        .required("Selecione uma forma de pagamento"),
-      obs: yup
-        .string()
-    });*/
+  const saleSchema = yup.object().shape({
+    client: yup
+      .string()
+      .required("Preencha o nome do cliente")
+  });
+
+  /*const saleSchema = yup.object().shape({
+    client: yup
+      .string()
+      .required("Preencha o nome do cliente"),
+    item: yup.array().of(
+      yup.object().shape({
+        cod: yup
+          .number()
+          .required("Insira o código do produto"),
+        description: yup
+          .string()
+          .required("insira uma descrição"),
+        price: yup
+          .string()
+          .required("insira um valor"),
+        pay_type: yup
+          .string()
+          .required("Selecione uma forma de pagamento"),
+        obs: yup
+          .string()
+      })
+    )
+  });*/
 
   const get_date = () => {
 
@@ -126,12 +138,12 @@ const FormNewSale = () => {
     control,
     formState: { errors },
   } = useForm<FormValues>({
-    //resolver: yupResolver(saleSchema),
+    resolver: yupResolver(saleSchema),
     defaultValues: {
       date: get_date(),
       client: "",
       item: [
-        { cod: null, description: "", price: 0, pay_type: "", obs: "" }
+        { cod: null, description: "", price: null, pay_type: "", obs: "" }
       ]
     }
   });
@@ -141,23 +153,16 @@ const FormNewSale = () => {
     control,
   })
 
-  const submit = async (data: object) => {
-    const result = await save_database(data);
-
-    // if (result.status === 200) {
-
-    //toast.success("Login realizado.");
-    console.log(result)
-    /*setTimeout(function() {
-        navigate("/dashboard")
-      }, 2000);*/
-
-    // } else {
-    //  toast.error("Ops! Algo deu errado.")
-    //}
+  const submit = (data: object) => {
+    console.log(data)
+    console.log(salesDatabase)
+    const result = addSale(data)
+    console.log(data)
+    console.log(salesDatabase)
+    set_modal_sale()
   };
 
-  const { itemsQty, set_items_qty_sum, set_items_qty_sub, set_modal_sale } = useContext(SalesContext)
+
 
   const createKey = () => Math.floor(Math.random() * 192837465)
 
@@ -184,9 +189,10 @@ const FormNewSale = () => {
   return (
     <main.Form_new_sale onSubmit={handleSubmit(submit)} noValidate>
       <main.Label_general>Cliente</main.Label_general>
-      <main.Input_general placeholder="Nome do cliente"           {...register("client")} />
+      <main.Input_general placeholder="Nome do cliente"          {...register("client")} />
       {errors.client?.message && (
         <main.P_aria_label aria-label="error">
+          {errors.client.message}
         </main.P_aria_label>
       )}
 
@@ -198,10 +204,10 @@ const FormNewSale = () => {
           <main.Button_add_item onClick={(e) => {
             e.preventDefault()
             set_items_qty_sum()
-            prepend({
+            append({
               cod: null,
               description: "",
-              price: 0,
+              price: null,
               pay_type: "",
               obs: ""
             })
@@ -233,6 +239,7 @@ const FormNewSale = () => {
               <input style={{ width: "45px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
                 type="number"
                 {...register(`item.${index}.cod`, { valueAsNumber: true })} />
+
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={{ fontWeight: "bold" }}>DESCRIÇÃO</label>

@@ -1,5 +1,6 @@
 import React, { createContext } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const SalesContext = createContext<iSalesProviderFunctions>({} as iSalesProviderFunctions);
 
@@ -9,10 +10,11 @@ interface iSalesProviderFunctions {
   set_items_qty_sum: () => void,
   set_items_qty_sub: () => void,
   set_items_qty: () => void,
-  addSale: () => void,
+  addSale: (data: object) => void,
   editSale: () => void,
   deleteSale: () => void,
   set_modal_sale: () => boolean | unknown | string,
+  salesDatabase: object[] 
 }
 
 interface iSalesProviderProps {
@@ -42,10 +44,26 @@ interface iSale {
 export const SalesProvider = ({ children }: iSalesProviderProps) => {
 
   const [showModalAddSale, setShowModalAddSale] = useState(false)
-
+  const [salesDatabase, setSalesDatabase] = useState([] as iSale[] | object[])
   let [itemsQty, setItemsQty] = useState(0)
 
-  const addSale = () => { }
+  useEffect(() => {
+    let sales_database = localStorage.getItem("@Mundo_do_rock_Sales")
+
+    if (sales_database) {
+      return setSalesDatabase(JSON.parse(sales_database))
+    } else {
+      return localStorage.setItem("@Mundo_do_rock_Sales", JSON.stringify(salesDatabase))
+    }
+
+  }, [])
+
+
+  const addSale = (data:object) => {
+    setSalesDatabase([...salesDatabase, data])
+    localStorage.setItem("@Mundo_do_rock_Sales", JSON.stringify(salesDatabase))
+    return salesDatabase
+  }
 
   const editSale = () => { }
 
@@ -78,7 +96,8 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
         addSale,
         editSale,
         deleteSale,
-        set_modal_sale
+        set_modal_sale,
+        salesDatabase
       }}
     >
       {children}

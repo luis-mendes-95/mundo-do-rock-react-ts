@@ -5,6 +5,8 @@ import { SalesContext } from "../../contexts/sales"
 import { useContext } from "react"
 import FormNewSale from "../../components/FormNewSale"
 import { ToastContainer } from "react-toastify";
+import * as main from "../../styles/main"
+import SalesList from "../../components/SalesList"
 
 const SalesPage = () => {
 
@@ -15,12 +17,14 @@ const SalesPage = () => {
       <Header />
       <SalesControls />
       {showModalAddSale === true ? (
-        <FormNewSale/>
+        <FormNewSale />
       ) : (
-        null
+        <SalesList/>
       )}
+      
+     
       <GlobalStyle />
-      <ToastContainer/>
+      <ToastContainer />
     </>
   )
 }

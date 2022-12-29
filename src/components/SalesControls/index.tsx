@@ -4,7 +4,7 @@ import * as main from "../../styles/main"
 
 const SalesControls = () => {
 
-    const { addSale, editSale, deleteSale, set_modal_sale, set_items_qty, showModalAddSale,
+    const { addSale, editSale, deleteSale, set_modal_add_sale, set_items_qty, showModalAddSale,
         day, month, year, set_day, set_month, set_year, get_frag_date } = useContext(SalesContext)
 
 
@@ -86,7 +86,7 @@ const SalesControls = () => {
             <main.Div_controls>
                 <main.Button_control onClick={(e) => {
                     e.preventDefault()
-                    set_modal_sale()
+                    set_modal_add_sale()
                     set_items_qty()
                 }}>Nova venda</main.Button_control>
                 <main.Div_search>

@@ -5,15 +5,21 @@ import { toast } from "react-toastify";
 export const SalesContext = createContext<iSalesProviderFunctions>({} as iSalesProviderFunctions);
 
 interface iSalesProviderFunctions {
+  showSalesList: boolean,
   showModalAddSale: boolean,
+  showModalEditSale: boolean,
+  showModalDeleteSale: boolean,
   itemsQty: number,
   set_items_qty_sum: () => void,
   set_items_qty_sub: () => void,
   set_items_qty: () => void,
+  set_show_sales_list: () => void,
   addSale: (data: object[]) => iSale[] | object[],
-  editSale: () => void,
+  editSale: (data: object) => void,
   deleteSale: () => void,
-  set_modal_sale: () => boolean | unknown | string,
+  set_modal_add_sale: () => boolean | unknown | string,
+  set_modal_edit_sale: (data: iSale) => boolean | unknown | string,
+  set_modal_delete_sale: (data: iSale) => boolean | unknown | string,
   salesDatabase: Array<any>,
   day: number,
   month: number,
@@ -21,7 +27,9 @@ interface iSalesProviderFunctions {
   set_day: (data: number) => number,
   set_month: (data: number) => number,
   set_year: (data: number) => number
-  get_frag_date: () => object
+  get_frag_date: () => object,
+  dataEdit: iSale | any,
+  dataDelete: iSale | any
 }
 
 interface iSalesProviderProps {
@@ -50,9 +58,13 @@ interface iSale {
 
 export const SalesProvider = ({ children }: iSalesProviderProps) => {
 
-
+  const [showSalesList, setShowSalesList] = useState(true)
   const [showModalAddSale, setShowModalAddSale] = useState(false)
+  const [showModalEditSale, setShowModalEditSale] = useState(false)
+  const [showModalDeleteSale, setShowModalDeleteSale] = useState(false)
   const [salesDatabase, setSalesDatabase] = useState([] as iSale[] | object[])
+  const [dataEdit, setDataEdit] = useState(null as iSale | object | null)
+  const [dataDelete, setDataDelete] = useState(null as iSale | object | null)
   let [itemsQty, setItemsQty] = useState(0)
   const [day, setDay] = useState(new Date().getDate())
   const [month, setMonth] = useState(new Date().getMonth())
@@ -92,12 +104,36 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
     return salesDatabase
   }
 
-  const editSale = () => { }
+  const editSale = (data: object) => { }
 
   const deleteSale = () => { }
 
-  const set_modal_sale = () => {
-    setShowModalAddSale(!showModalAddSale)
+  const set_show_sales_list = () => {
+    setShowSalesList(true)
+    setShowModalAddSale(false)
+    setShowModalDeleteSale(false)
+    setShowModalEditSale(false)
+  }
+
+  const set_modal_add_sale = () => {
+    setShowSalesList(false)
+    setShowModalAddSale(true)
+    setShowModalDeleteSale(false)
+    setShowModalEditSale(false)
+  }
+
+  const set_modal_edit_sale = (data: iSale) => {
+    setShowSalesList(false)
+    setShowModalAddSale(false)
+    setShowModalDeleteSale(false)
+    setShowModalEditSale(true)
+  }
+
+  const set_modal_delete_sale = (data: iSale) => {
+    setShowSalesList(false)
+    setShowModalAddSale(false)
+    setShowModalDeleteSale(true)
+    setShowModalEditSale(false)
   }
 
   const set_items_qty_sum = () => {
@@ -201,15 +237,21 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
   return (
     <SalesContext.Provider
       value={{
+        showSalesList,
         showModalAddSale,
+        showModalEditSale,
+        showModalDeleteSale,
         itemsQty,
         set_items_qty_sum,
         set_items_qty_sub,
         set_items_qty,
+        set_show_sales_list,
         addSale,
         editSale,
         deleteSale,
-        set_modal_sale,
+        set_modal_add_sale,
+        set_modal_edit_sale,
+        set_modal_delete_sale,
         salesDatabase,
         day,
         month,
@@ -217,7 +259,9 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
         set_day,
         set_month,
         set_year,
-        get_frag_date
+        get_frag_date,
+        dataDelete,
+        dataEdit
       }}
     >
       {children}

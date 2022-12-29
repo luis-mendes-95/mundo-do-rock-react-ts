@@ -7,11 +7,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
-const FormNewSale = () => {
+const FormEditSale = () => {
 
   const createKey = () => Math.floor(Math.random() * 1029384756102201)
 
-  const { itemsQty, set_show_sales_list, set_items_qty_sum, set_items_qty_sub, set_modal_add_sale, addSale, salesDatabase } = useContext(SalesContext)
+  const { itemsQty, set_items_qty_sum, set_items_qty_sub, set_modal_edit_sale, editSale, salesDatabase, dataEdit, dataDelete } = useContext(SalesContext)
 
   type FormValues = {
     id: number,
@@ -31,30 +31,6 @@ const FormNewSale = () => {
       .string()
       .required("Preencha o nome do cliente")
   });
-
-  /*const saleSchema = yup.object().shape({
-    client: yup
-      .string()
-      .required("Preencha o nome do cliente"),
-    item: yup.array().of(
-      yup.object().shape({
-        cod: yup
-          .number()
-          .required("Insira o código do produto"),
-        description: yup
-          .string()
-          .required("insira uma descrição"),
-        price: yup
-          .string()
-          .required("insira um valor"),
-        pay_type: yup
-          .string()
-          .required("Selecione uma forma de pagamento"),
-        obs: yup
-          .string()
-      })
-    )
-  });*/
 
   const get_date = () => {
 
@@ -157,11 +133,11 @@ const FormNewSale = () => {
     control,
   })
 
-  const submit = (data: object) => {
+  const submit = (data: object | any) => {
     const actualArray = salesDatabase
     const newArray = [...actualArray, data]
-    addSale(newArray)
-    set_modal_add_sale()
+    editSale(newArray)
+    set_modal_edit_sale(data)
   };
 
 
@@ -185,6 +161,8 @@ const FormNewSale = () => {
 
     return qtyToRender
   }
+
+  const qtyToRender = getQtyToRender()
 
   return (
       <main.Form_new_sale onSubmit={handleSubmit(submit)} noValidate>
@@ -279,7 +257,7 @@ const FormNewSale = () => {
           </main.Div_Item>)
         })}
 
-        {/*qtyToRender.length === 0 ? (
+        {qtyToRender.length === 0 ? (
         null
       ) : (
         qtyToRender.map((item) => {
@@ -322,12 +300,12 @@ const FormNewSale = () => {
 
           </main.Div_Item>)
         })
-      )}*/}
+      )}
         <div style={{width: "100%", display:"flex", justifyContent:"center", gap:"25px", margin: "5px 0"}}>
           <main.Button_save type="submit">Concluir</main.Button_save>
           <main.Button_delete onClick={(e) => {
             e.preventDefault()
-            set_show_sales_list()
+            set_modal_edit_sale(dataEdit)
           }}>Cancelar</main.Button_delete>
         </div>
 
@@ -335,4 +313,4 @@ const FormNewSale = () => {
   )
 }
 
-export default FormNewSale
+export default FormEditSale

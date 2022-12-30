@@ -87,7 +87,7 @@ const SalesControls = () => {
                 <main.Button_control onClick={(e) => {
                     e.preventDefault()
                     set_modal_add_sale()
-                    set_items_qty()
+                    set_items_qty(1)
                 }}>Nova venda</main.Button_control>
                 <main.Div_search>
                     <main.Input_search placeholder="Pesquise aqui" />

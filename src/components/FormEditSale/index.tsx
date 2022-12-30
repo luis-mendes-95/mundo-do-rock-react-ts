@@ -9,9 +9,17 @@ import "react-toastify/dist/ReactToastify.min.css";
 
 const FormEditSale = () => {
 
+
   const createKey = () => Math.floor(Math.random() * 1029384756102201)
 
-  const { itemsQty, set_items_qty_sum, set_items_qty_sub, set_modal_edit_sale, editSale, salesDatabase, dataEdit, dataDelete } = useContext(SalesContext)
+  let { itemsQty, set_items_qty, set_items_qty_sum, set_items_qty_sub, set_show_sales_list, set_modal_edit_sale, editSale, salesDatabase, dataEdit } = useContext(SalesContext)
+
+  let total: any = dataEdit.item.map((item: object) => {
+    return item
+  }).map((item: any) => {
+    return item.price
+  }).reduce((acc: number, elem: number) => acc += elem, 0).toFixed(2).replace('.', ',')
+
 
   type FormValues = {
     id: number,
@@ -119,12 +127,10 @@ const FormEditSale = () => {
   } = useForm<FormValues>({
     resolver: yupResolver(saleSchema),
     defaultValues: {
-      id: createKey(),
-      date: get_date(),
-      client: "",
-      item: [
-        { cod: null, description: "", price: null, pay_type: "", obs: "" }
-      ]
+      id: dataEdit.id,
+      date: dataEdit.date,
+      client: dataEdit.client,
+      item: dataEdit.item
     }
   });
 
@@ -133,28 +139,47 @@ const FormEditSale = () => {
     control,
   })
 
-  const submit = (data: object | any) => {
+  const submit = (data: any): any => {
+
     const actualArray = salesDatabase
-    const newArray = [...actualArray, data]
-    editSale(newArray)
-    set_modal_edit_sale(data)
+
+    const newArray = () => {
+      let result = actualArray.map((sale) => {
+        if (sale.id === data.id) {
+          return data
+        } else {
+          return sale
+        }
+      })
+
+      return result
+    }
+
+    let result = newArray()
+
+    console.log(result)
+
+    editSale(result)
+    set_show_sales_list()
+
+    return result
   };
 
-
-
   const getQtyToRender = () => {
+
+    set_items_qty(dataEdit.item.length)
 
     let temp = 1
 
     let qtyToRender = []
 
-    for (let i = 1; i <= itemsQty; i++) {
+    for (let i = 1; i <= dataEdit.item.length; i++) {
 
-      if (itemsQty === 0) {
+      if (dataEdit.item.length === 0) {
         return qtyToRender
       }
 
-      if (temp <= itemsQty) {
+      if (temp <= dataEdit.item.length) {
         qtyToRender.push("add")
       }
     }
@@ -164,152 +189,114 @@ const FormEditSale = () => {
 
   const qtyToRender = getQtyToRender()
 
+
+  let total_temp: any = fields.map((item: object) => {
+    return item
+  }).map((item: any) => {
+    return item.price
+  }).reduce((acc: number, elem: number) => acc += elem, 0).toFixed(2).replace('.', ',')
+
+
   return (
-      <main.Form_new_sale onSubmit={handleSubmit(submit)} noValidate>
-        <main.Label_general>Cliente</main.Label_general>
-        <main.Input_general placeholder="Nome do cliente"          {...register("client")} />
-        {errors.client?.message && (
-          <main.P_aria_label aria-label="error">
-            {errors.client.message}
-          </main.P_aria_label>
-        )}
 
-        <main.Div_floating_info>
+    <form onSubmit={handleSubmit(submit)} noValidate>
+      <main.Div_floating_info>
 
-          {/* DIV DO BOTÃO DE ADICIONAR ITEM */}
-          <main.Div_items_button_add>
-            <main.Label_general>Itens</main.Label_general>
-            <main.Button_add_item onClick={(e) => {
-              e.preventDefault()
-              set_items_qty_sum()
-              append({
-                cod: null,
-                description: "",
-                price: null,
-                pay_type: "",
-                obs: ""
-              })
-            }}>+</main.Button_add_item>
-            {itemsQty > 1 ? (
-              <main.Button_remove_item onClick={(e) => {
-                e.preventDefault()
-                set_items_qty_sub()
-                remove(1)
-                //prepend()
-              }}>-</main.Button_remove_item>
-            ) : (null)}
-          </main.Div_items_button_add>
-          {/* DIV DO BOTÃO DE ADICIONAR ITEM */}
-
-
-
-          {/* DIV DO RESUMO DO TOTAL DE ITENS DO CARRINHO E DO TOTAL DA VENDA */}
-          <main.Div_resume_cart_and_total style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>🛒{itemsQty}</main.Div_resume_cart_and_total>
-          {/* DIV DO RESUMO DO TOTAL DE ITENS DO CARRINHO E DO TOTAL DA VENDA */}
-
-        </main.Div_floating_info>
-
-        {fields.map((field, index) => {
-          return (<main.Div_Item key={field.id}>
-            <main.Div_item_info>
-              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <label style={{ fontWeight: "bold" }}>COD</label>
-                <input style={{ width: "45px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
-                  type="number"
-                  {...register(`item.${index}.cod`, { valueAsNumber: true })} />
-
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={{ fontWeight: "bold" }}>DESCRIÇÃO</label>
-                <input style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
-                  {...register(`item.${index}.description`)} />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={{ fontWeight: "bold" }}>PREÇO</label>
-                <input type="number" style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
-                  {...register(`item.${index}.price`, { valueAsNumber: true })} />
-              </div>
-            </main.Div_item_info>
-
-            <main.Div_item_info>
-              <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                <label style={{ fontWeight: "bold" }}>Pagamento:</label>
-                <select style={{ width: "100%", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
-                  {...register(`item.${index}.pay_type`)}>
-                  <option value="">Selecione</option>
-                  <option value="A vista">A vista</option>
-                  <option value="Pix">Pix</option>
-                  <option value="Débito">Débito</option>
-                  <option value="Crédito">Crédito</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-            </main.Div_item_info>
-
-            <main.Div_item_info>
-              <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                <label style={{ fontWeight: "bold" }}>OBS</label>
-                <textarea style={{ width: "100%", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
-                  {...register(`item.${index}.obs`)} />
-              </div>
-            </main.Div_item_info>
-
-          </main.Div_Item>)
-        })}
-
-        {qtyToRender.length === 0 ? (
-        null
-      ) : (
-        qtyToRender.map((item) => {
-          return (<main.Div_Item key={createKey()}>
-            <main.Div_item_info>
-              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <label style={{ fontWeight: "bold" }}>COD</label>
-                <input style={{ width: "45px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}/>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={{ fontWeight: "bold" }}>DESCRIÇÃO</label>
-                <input style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}/>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={{ fontWeight: "bold" }}>PREÇO</label>
-                <input type="number" style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}/>
-              </div>
-            </main.Div_item_info>
-
-            <main.Div_item_info>
-              <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                <label style={{ fontWeight: "bold" }}>Pagamento:</label>
-                <select style={{ width: "100%", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}>
-                  <option value="">Selecione</option>
-                  <option value="A vista">A vista</option>
-                  <option value="Pix">Pix</option>
-                  <option value="Débito">Débito</option>
-                  <option value="Crédito">Crédito</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-            </main.Div_item_info>
-
-            <main.Div_item_info>
-              <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                <label style={{ fontWeight: "bold" }}>OBS</label>
-                <textarea style={{ width: "100%", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }} />
-              </div>
-            </main.Div_item_info>
-
-          </main.Div_Item>)
-        })
-      )}
-        <div style={{width: "100%", display:"flex", justifyContent:"center", gap:"25px", margin: "5px 0"}}>
-          <main.Button_save type="submit">Concluir</main.Button_save>
-          <main.Button_delete onClick={(e) => {
+        {/* DIV DO BOTÃO DE ADICIONAR ITEM */}
+        <main.Div_items_button_add>
+          <main.Label_general>Itens</main.Label_general>
+          <main.Button_add_item onClick={(e) => {
             e.preventDefault()
-            set_modal_edit_sale(dataEdit)
-          }}>Cancelar</main.Button_delete>
-        </div>
+            set_items_qty(itemsQty += 1)
+            append({
+              cod: null,
+              description: "",
+              price: null,
+              pay_type: "",
+              obs: ""
+            })
+          }}>+</main.Button_add_item>
+          <main.Button_remove_item onClick={(e) => {
+            e.preventDefault()
+            set_items_qty(itemsQty -= 1)
+            remove(1)
+            //prepend()
+          }}>-</main.Button_remove_item>
 
-      </main.Form_new_sale>
+        </main.Div_items_button_add>
+        {/* DIV DO BOTÃO DE ADICIONAR ITEM */}
+
+
+
+        {/* DIV DO RESUMO DO TOTAL DE ITENS DO CARRINHO E DO TOTAL DA VENDA */}
+        <main.Div_resume_cart_and_total style={{ display: "flex", justifyContent: "space-around", width: "100%", gap:"5px", alignItems:"center" }}>
+        <label style={{ fontWeight: "bold" }}>Cliente</label>
+        <main.Input_general style={{width: "50%"}} placeholder="Nome do cliente"  defaultValue={dataEdit.client}        {...register("client")} />
+          <p style={{textAlign:"center"}}>🛒{fields.length}</p>
+          <p>R${total_temp}</p>
+        </main.Div_resume_cart_and_total>
+        {/* DIV DO RESUMO DO TOTAL DE ITENS DO CARRINHO E DO TOTAL DA VENDA */}
+
+      </main.Div_floating_info>
+
+      {fields.map((field, index) => {
+        return (<main.Div_Item key={field.id}>
+          <main.Div_item_info>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <label style={{ fontWeight: "bold" }}>COD</label>
+              <input style={{ width: "45px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
+                type="number"
+                {...register(`item.${index}.cod`, { valueAsNumber: true })} />
+
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={{ fontWeight: "bold" }}>DESCRIÇÃO</label>
+              <input style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
+                {...register(`item.${index}.description`)} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={{ fontWeight: "bold" }}>PREÇO</label>
+              <input type="number" style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
+                {...register(`item.${index}.price`, { valueAsNumber: true })} />
+            </div>
+          </main.Div_item_info>
+
+          <main.Div_item_info>
+            <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+              <label style={{ fontWeight: "bold" }}>Pagamento:</label>
+              <select style={{ width: "100%", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
+                {...register(`item.${index}.pay_type`)}>
+                <option value="">Selecione</option>
+                <option value="A vista">A vista</option>
+                <option value="Pix">Pix</option>
+                <option value="Débito">Débito</option>
+                <option value="Crédito">Crédito</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+          </main.Div_item_info>
+
+          <main.Div_item_info>
+            <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+              <label style={{ fontWeight: "bold" }}>OBS</label>
+              <textarea style={{ width: "100%", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
+                {...register(`item.${index}.obs`)} />
+            </div>
+          </main.Div_item_info>
+
+        </main.Div_Item>)
+      })}
+
+
+      <div style={{ width: "100%", display: "flex", justifyContent: "center", gap: "25px", margin: "5px 0" }}>
+        <main.Button_save type="submit">Concluir</main.Button_save>
+        <main.Button_delete onClick={(e) => {
+          e.preventDefault()
+          set_show_sales_list()
+        }}>Cancelar</main.Button_delete>
+      </div>
+    </form>
+
   )
 }
 

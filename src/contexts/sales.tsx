@@ -12,11 +12,11 @@ interface iSalesProviderFunctions {
   itemsQty: number,
   set_items_qty_sum: () => void,
   set_items_qty_sub: () => void,
-  set_items_qty: () => void,
+  set_items_qty: (data: number) => number,
   set_show_sales_list: () => void,
   addSale: (data: object[]) => iSale[] | object[],
-  editSale: (data: object) => void,
-  deleteSale: () => void,
+  editSale: (data: any) => any
+  deleteSale: (data: any) => any,
   set_modal_add_sale: () => boolean | unknown | string,
   set_modal_edit_sale: (data: iSale) => boolean | unknown | string,
   set_modal_delete_sale: (data: iSale) => boolean | unknown | string,
@@ -96,7 +96,6 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
     return year
   }
 
-
   const addSale = (data: iSale[] | object[]) => {
     setSalesDatabase(data)
     localStorage.setItem("@Mundo_do_rock_Sales", JSON.stringify(data))
@@ -104,9 +103,24 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
     return salesDatabase
   }
 
-  const editSale = (data: object) => { }
+  const editSale = (data: iSale[]) => {
+    console.log(data)
+    setSalesDatabase(data)
+    localStorage.setItem("@Mundo_do_rock_Sales", JSON.stringify(data))
+    toast.success("Venda editada com sucesso")
+    return salesDatabase
+   }
 
-  const deleteSale = () => { }
+  const deleteSale = (data: iSale) => {
+
+    const newArray = salesDatabase.filter(sale => sale !== data)
+
+    setSalesDatabase(newArray)
+    localStorage.setItem("@Mundo_do_rock_Sales", JSON.stringify(newArray))
+
+    set_show_sales_list()
+
+   }
 
   const set_show_sales_list = () => {
     setShowSalesList(true)
@@ -123,6 +137,7 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
   }
 
   const set_modal_edit_sale = (data: iSale) => {
+    setDataEdit(data)
     setShowSalesList(false)
     setShowModalAddSale(false)
     setShowModalDeleteSale(false)
@@ -130,6 +145,7 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
   }
 
   const set_modal_delete_sale = (data: iSale) => {
+    setDataDelete(data)
     setShowSalesList(false)
     setShowModalAddSale(false)
     setShowModalDeleteSale(true)
@@ -144,8 +160,9 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
     setItemsQty(itemsQty -= 1)
   }
 
-  const set_items_qty = () => {
+  const set_items_qty = (data: number) => {
     setItemsQty(itemsQty = 1)
+    return data
   }
 
   const get_frag_date = () => {
@@ -220,6 +237,28 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
       minute = "08"
     } else if (minute === "9") {
       minute = "09"
+    }
+
+    if (second === "0") {
+      second = "00"
+    } else if (second === "1") {
+      second = "01"
+    } else if (second === "2") {
+      second = "02"
+    } else if (second === "3") {
+      second = "03"
+    } else if (second === "4") {
+      second = "04"
+    } else if (second === "5") {
+      second = "05"
+    } else if (second === "6") {
+      second = "06"
+    } else if (second === "7") {
+      second = "07"
+    } else if (second === "8") {
+      second = "08"
+    } else if (second === "9") {
+      second = "09"
     }
 
     const frag_date = {

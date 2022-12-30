@@ -161,7 +161,7 @@ const FormNewSale = () => {
     const actualArray = salesDatabase
     const newArray = [...actualArray, data]
     addSale(newArray)
-    set_modal_add_sale()
+    set_show_sales_list()
   };
 
 

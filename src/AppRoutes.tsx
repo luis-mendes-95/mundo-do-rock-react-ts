@@ -5,13 +5,13 @@ import { SalesProvider } from "./contexts/sales";
 const AppRoutes = () => {
     return (
         <Router>
-            <SalesProvider>
-                <Routes>
+                <SalesProvider>
+                    <Routes>
 
-                    <Route path="/" element={<SalesPage />} />
+                        <Route path="/" element={<SalesPage />} />
 
-                </Routes>
-            </SalesProvider>
+                    </Routes>
+                </SalesProvider>
         </Router>
     )
 }

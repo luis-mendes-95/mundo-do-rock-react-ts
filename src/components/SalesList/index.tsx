@@ -28,18 +28,30 @@ const SalesList = () => {
   
           return (
             <main.Li_item key={createKey()}>
-              <main.Div_item_data>
+              <div style={{display:"flex", width:"100%", justifyContent:"center"}}>
+
+              <main.Div_item_data style={{width:"100%"}}>
                 <main.H3_data_title>Data</main.H3_data_title>
                 <main.P_data>{sale.date}</main.P_data>
               </main.Div_item_data>
-              <main.Div_item_data>
-                <main.H3_data_title>Cliente</main.H3_data_title>
-                <main.P_data>{sale.client}</main.P_data>
-              </main.Div_item_data>
-              <main.Div_item_data>
+
+              <main.Div_item_data style={{width:"80%"}}>
                 <main.H3_data_title>Total</main.H3_data_title>
                 <main.P_data>{`R$ ${total}`}</main.P_data>
               </main.Div_item_data>
+              
+              </div>
+
+              <main.Div_item_data style={{width:"100%"}}>
+                <main.H3_data_title>Itens:</main.H3_data_title>
+                {sale.item.map((item: any) => {
+                  return (
+                    <main.P_data style={{border:"1pt solid black"}}>{item.description}</main.P_data>
+                  )
+                })}
+
+              </main.Div_item_data>
+
               <div style={{ width: "100%", display: "flex", justifyContent: "space-around", margin: "5px 0" }}>
                 <main.Button_more_details onClick={(e)=>{
                   e.preventDefault()

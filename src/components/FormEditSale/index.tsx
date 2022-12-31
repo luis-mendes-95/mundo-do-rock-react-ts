@@ -37,7 +37,6 @@ const FormEditSale = () => {
   const saleSchema = yup.object().shape({
     client: yup
       .string()
-      .required("Preencha o nome do cliente")
   });
 
   const get_date = () => {
@@ -289,11 +288,11 @@ const FormEditSale = () => {
 
 
       <div style={{ width: "100%", display: "flex", justifyContent: "center", gap: "25px", margin: "5px 0" }}>
-        <main.Button_save type="submit">Concluir</main.Button_save>
+        <main.Button_save type="submit">Salvar</main.Button_save>
         <main.Button_delete onClick={(e) => {
           e.preventDefault()
           set_show_sales_list()
-        }}>Cancelar</main.Button_delete>
+        }}>☚ Voltar</main.Button_delete>
       </div>
     </form>
 

@@ -1,13 +1,24 @@
 import * as main from "../../styles/main"
-import { useContext } from "react"
+import React, { InputHTMLAttributes, useContext } from "react"
 import { SalesContext } from "../../contexts/sales"
 import { useForm, Control, useFieldArray, useWatch } from "react-hook-form";
+import { useState, useCallback } from "react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
-const FormNewSale = () => {
+const FormNewSale: React.FC<InputHTMLAttributes<HTMLInputElement>> = () => {
+
+  interface iItemPrice {
+    price: number
+  }
+
+  const [itemPrice, setItemPrice] = useState<iItemPrice>({} as iItemPrice)
+
+  const handleChange = useCallback((e: React.FormEvent<HTMLInputElement>)=> {
+    setItemPrice({...itemPrice,[e.currentTarget.name]: e.currentTarget.value})
+  }, [itemPrice])
 
   const createKey = () => Math.floor(Math.random() * 1029384756102201)
 
@@ -29,7 +40,6 @@ const FormNewSale = () => {
   const saleSchema = yup.object().shape({
     client: yup
       .string()
-      .required("Preencha o nome do cliente")
   });
 
   /*const saleSchema = yup.object().shape({
@@ -158,12 +168,12 @@ const FormNewSale = () => {
   })
 
   const submit = (data: object) => {
+    console.log(itemPrice)
     const actualArray = salesDatabase
     const newArray = [...actualArray, data]
     addSale(newArray)
     set_show_sales_list()
   };
-
 
 
   const getQtyToRender = () => {
@@ -248,7 +258,8 @@ const FormNewSale = () => {
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <label style={{ fontWeight: "bold" }}>PREÇO</label>
-                <input type="number" style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
+                <input type="number" placeholder="R$ 0,00" 
+                style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
                   {...register(`item.${index}.price`, { valueAsNumber: true })} />
               </div>
             </main.Div_item_info>

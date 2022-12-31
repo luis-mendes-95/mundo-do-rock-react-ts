@@ -1,7 +1,7 @@
 import AppRoutes from "./AppRoutes";
 import GlobalStyle from "./styles/GlobalStyles";
 
-function App() {
+const App: React.FC = () => {
 
   return (
     <>

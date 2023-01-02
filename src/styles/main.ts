@@ -127,6 +127,10 @@ export const Form_new_sale = styled.form`
   background-color: white;
   height: 100%;
   gap: 2px;
+
+  @media (min-width: 768px) {
+    padding: 0 30%;
+  }
 `;
 
 export const Label_general = styled.label`
@@ -183,6 +187,12 @@ export const Li_item = styled.li`
   padding: 2px;
   margin: 4px;
   background-color: darkgray;
+  
+  @media (min-width: 768px) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
 `;
 
 export const Div_item_data = styled.div`
@@ -203,6 +213,7 @@ export const P_data = styled.p`
 `;
 
 export const Button_more_details = styled.button`
+  cursor: pointer;
   padding: 10px;
   border-radius: 20px;
   border: none;
@@ -213,6 +224,7 @@ export const Button_more_details = styled.button`
 `;
 
 export const Button_save = styled.button`
+  cursor: pointer;
   padding: 10px;
   border-radius: 20px;
   border: none;
@@ -223,6 +235,7 @@ export const Button_save = styled.button`
 `;
 
 export const Button_delete = styled.button`
+  cursor: pointer;
   padding: 10px;
   border-radius: 20px;
   border: none;
@@ -230,4 +243,42 @@ export const Button_delete = styled.button`
   font-weight: bold;
   color: white;
   text-shadow: 1pt 1pt 1pt black;
+`;
+
+export const Div_date = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 5px;
+
+  @media(min-width: 768px) {
+    padding: 0 37%;
+  }
+`;
+
+export const Ul_sales_list = styled.ul`
+  height: 70vh;
+  overflow: scroll;
+
+  @media(min-width: 768px) {
+    padding: 0 15%;
+  }
+`;
+
+export const Div_item_description = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Input_item_description = styled.input`
+  width: 250px;
+  border-radius: 8px;
+  border: none;
+  background-color: lightgray;
+  padding: 8px;
+  height: 100%;
+
+
+
+
 `;

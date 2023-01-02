@@ -10,7 +10,7 @@ const SalesList = () => {
   const createKey = () => Math.floor(Math.random() * 192837465)
 
   return (
-    <ul style={{ height: "70vh", overflow: "scroll" }}>
+    <main.Ul_sales_list>
 
       
       {
@@ -96,7 +96,7 @@ const SalesList = () => {
       
       }
 
-    </ul>
+    </main.Ul_sales_list>
   )
 }
 

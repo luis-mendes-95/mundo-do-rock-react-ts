@@ -99,7 +99,7 @@ const SalesControls = () => {
             {showModalAddSale === true ? (
                 null
             ) : (
-                <div style={{ display: "flex", width: "100%", justifyContent: "center", gap: "5px" }}>
+                <main.Div_date>
                     <h3 style={{ fontSize: "12pt" }}>Período:</h3>
                     <select onChange={(e) => { set_date_day(e.target.value) }} style={{ width: "20%", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}>
                         <option value="Todos">Todos</option>
@@ -382,7 +382,7 @@ const SalesControls = () => {
                         )}
 
                     </select>
-                </div>
+                </main.Div_date>
             )}
 
         </main.Div_background>

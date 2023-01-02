@@ -251,11 +251,11 @@ const FormNewSale: React.FC<InputHTMLAttributes<HTMLInputElement>> = () => {
                   {...register(`item.${index}.cod`, { valueAsNumber: true })} />
 
               </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <main.Div_item_description >
                 <label style={{ fontWeight: "bold" }}>DESCRIÇÃO</label>
-                <input style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
+                <main.Input_item_description style={{ width: "105px", borderRadius: "8px", border: "none", backgroundColor: "lightgray", padding: "8px" }}
                   {...register(`item.${index}.description`)} />
-              </div>
+              </main.Div_item_description>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <label style={{ fontWeight: "bold" }}>PREÇO</label>
                 <input type="number" placeholder="R$ 0,00" 

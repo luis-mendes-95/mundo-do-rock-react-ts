@@ -104,7 +104,6 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
   }
 
   const editSale = (data: iSale[]) => {
-    console.log(data)
     setSalesDatabase(data)
     localStorage.setItem("@Mundo_do_rock_Sales", JSON.stringify(data))
     toast.success("Venda editada com sucesso")
@@ -272,6 +271,11 @@ export const SalesProvider = ({ children }: iSalesProviderProps) => {
 
     return frag_date
   }
+
+  const total = salesDatabase.map((sale)=>{
+    console.log(sale)
+  })
+  
 
   return (
     <SalesContext.Provider

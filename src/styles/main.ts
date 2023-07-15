@@ -57,7 +57,7 @@ export const Input_search = styled.input`
 `;
 
 export const Input_general = styled.input`
-  width: 90%;
+  width: 100%;
   border-radius: 9px;
   border: none;
   background: lightgray;

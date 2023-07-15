@@ -142,6 +142,7 @@ export const Label_general = styled.label`
 export const Div_item_info = styled.div`
   display: flex;
   width: 90%;
+  flex-wrap: wrap;
   justify-content: space-around;
 `;
 
